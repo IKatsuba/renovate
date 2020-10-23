@@ -19,7 +19,7 @@ export async function extractPackageFile(
       return null;
     }
     // TODO: fix me
-    const chart = yaml.safeLoad(chartContents, { json: true }) as any;
+    const chart = yaml.safeLoad(chartContents, { json: true });
     if (!(chart?.apiVersion && chart.name && chart.version)) {
       logger.debug(
         { fileName },

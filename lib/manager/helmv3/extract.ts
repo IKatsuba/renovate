@@ -18,7 +18,7 @@ export function extractPackageFile(
   };
   try {
     // TODO: fix me
-    chart = yaml.safeLoad(content, { json: true }) as any;
+    chart = yaml.safeLoad(content, { json: true });
     if (!(chart?.apiVersion && chart.name && chart.version)) {
       logger.debug(
         { fileName },

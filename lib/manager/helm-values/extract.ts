@@ -57,7 +57,7 @@ export function extractPackageFile(content: string): PackageFile {
     // a parser that allows extracting line numbers would be preferable, with
     // the current approach we need to match anything we find again during the update
     // TODO: fix me
-    parsedContent = yaml.safeLoad(content, { json: true }) as any;
+    parsedContent = yaml.safeLoad(content, { json: true });
   } catch (err) {
     logger.debug({ err }, 'Failed to parse helm-values YAML');
     return null;

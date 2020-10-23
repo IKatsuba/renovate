@@ -41,7 +41,7 @@ export async function extractPackageFile(
   const deps: PackageDependency[] = [];
   try {
     // TODO: fix me
-    const doc = yaml.safeLoad(content, { json: true }) as any;
+    const doc = yaml.safeLoad(content, { json: true });
     if (doc?.include && is.array(doc.include)) {
       for (const includeObj of doc.include) {
         if (includeObj.file && includeObj.project) {

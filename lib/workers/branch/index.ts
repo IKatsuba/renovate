@@ -12,6 +12,7 @@ import {
   SYSTEM_INSUFFICIENT_DISK_SPACE,
   WORKER_FILE_UPDATE_FAILED,
 } from '../../constants/error-messages';
+import { NpmRelease, getDependency } from '../../datasource/npm/get';
 import { logger } from '../../logger';
 import { getAdditionalFiles } from '../../manager/npm/post-update';
 import { Pr, platform } from '../../platform';
@@ -342,6 +343,26 @@ export async function processBranch(
       );
       const commands = config.postUpgradeTasks.commands || [];
       const fileFilters = config.postUpgradeTasks.fileFilters || [];
+
+      const { depName, toVersion, fromVersion } = config;
+
+      const { releases } =
+        config.datasource === 'npm'
+          ? await getDependency(config.depName)
+          : { releases: [] };
+
+      if (
+        (releases.find(
+          (release) => release.version === toVersion
+        ) as NpmRelease)?.hasNgMigrations
+      ) {
+        commands.push('npm ci');
+        commands.push(
+          `npx ng update ${depName} --from=${fromVersion} --to=${toVersion} --migrateOnly --allowDirty --force`
+        );
+
+        fileFilters.push('**/**');
+      }
 
       if (is.nonEmptyArray(commands)) {
         // Persist updated files in file system so any executed commands can see them

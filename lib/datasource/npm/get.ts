@@ -31,6 +31,7 @@ export function resetCache(): void {
 export interface NpmRelease extends Release {
   canBeUnpublished?: boolean;
   gitRef?: string;
+  hasNgMigrations?: boolean;
 }
 export interface NpmDependency extends ReleaseResult {
   releases: NpmRelease[];
@@ -66,6 +67,7 @@ interface NpmResponse {
   };
   homepage?: string;
   time?: Record<string, string>;
+  'ng-update'?: { migrations?: unknown };
 }
 
 export async function getDependency(
@@ -223,6 +225,8 @@ export async function getDependency(
       if (res.versions[version].deprecated) {
         release.isDeprecated = true;
       }
+      release.hasNgMigrations = !!res.versions[version]['ng-update']
+        ?.migrations;
       return release;
     });
     logger.trace({ dep }, 'dep');
